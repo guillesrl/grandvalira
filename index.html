@@ -92,14 +92,23 @@
     }
     .sobre h3 { font-size: 1rem; color: var(--azul); margin-bottom: 6px; }
     .sobre p { color: var(--texto); font-size: .92rem; line-height: 1.5; white-space: pre-line; }
-    .btn-wise {
+    .tips-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .tips-label { font-size: .8rem; color: var(--texto-dim, #8899aa); }
+    .btn-wise, .btn-bizum {
       display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 10px; padding: 5px 12px;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: .8rem; cursor: pointer; transition: background .2s;
+    }
+    .btn-wise {
       background: rgba(22, 185, 140, 0.12); color: #16b98c;
-      border: 1px solid rgba(22, 185, 140, 0.35); border-radius: 20px;
-      font-size: .8rem; text-decoration: none; transition: background .2s;
+      border: 1px solid rgba(22, 185, 140, 0.35); text-decoration: none;
     }
     .btn-wise:hover { background: rgba(22, 185, 140, 0.22); }
+    .btn-bizum {
+      background: rgba(0, 130, 255, 0.12); color: #3399ff;
+      border: 1px solid rgba(0, 130, 255, 0.35); font-family: inherit;
+    }
+    .btn-bizum:hover { background: rgba(0, 130, 255, 0.22); }
 
     /* Datos + logos en fila: texto a la izquierda, redes en columna a la derecha */
     .info { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
@@ -212,10 +221,17 @@
         <div class="sobre" id="sobre" hidden>
           <h3>Sobre mí</h3>
           <p id="sobreTexto"></p>
-          <a id="wiseBtn" class="btn-wise" target="_blank" rel="noopener" hidden>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.01 7.5l-4.5 9-2.25-4.5-2.25 4.5-4.5-9h2.25l2.25 4.5 2.25-4.5 2.25 4.5 2.25-4.5H17.01z"/></svg>
-            Wise
-          </a>
+          <div id="tipsRow" class="tips-row" hidden>
+            <span class="tips-label">Tips:</span>
+            <a id="wiseBtn" class="btn-wise" target="_blank" rel="noopener" hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.01 7.5l-4.5 9-2.25-4.5-2.25 4.5-4.5-9h2.25l2.25 4.5 2.25-4.5 2.25 4.5 2.25-4.5H17.01z"/></svg>
+              Wise
+            </a>
+            <button id="bizumBtn" class="btn-bizum" hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              Bizum
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -350,8 +366,21 @@
         document.getElementById("sobreTexto").textContent = m.sobre;
         sobre.hidden = false;
         const wiseBtn = document.getElementById("wiseBtn");
-        if (m.wise) { wiseBtn.href = m.wise; wiseBtn.hidden = false; }
-        else { wiseBtn.hidden = true; }
+        const bizumBtn = document.getElementById("bizumBtn");
+        const tipsRow = document.getElementById("tipsRow");
+        if (m.wise) { wiseBtn.href = m.wise; wiseBtn.hidden = false; } else { wiseBtn.hidden = true; }
+        if (m.telefono) {
+          bizumBtn.hidden = false;
+          bizumBtn.onclick = () => {
+            const num = m.telefono.replace(/\s/g, "");
+            navigator.clipboard.writeText(num).then(() => {
+              const orig = bizumBtn.textContent;
+              bizumBtn.textContent = "¡Copiado!";
+              setTimeout(() => { bizumBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg> Bizum'; }, 2000);
+            });
+          };
+        } else { bizumBtn.hidden = true; }
+        tipsRow.hidden = wiseBtn.hidden && bizumBtn.hidden;
       } else {
         sobre.hidden = true;
       }
