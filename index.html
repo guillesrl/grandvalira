@@ -92,6 +92,14 @@
     }
     .sobre h3 { font-size: 1rem; color: var(--azul); margin-bottom: 6px; }
     .sobre p { color: var(--texto); font-size: .92rem; line-height: 1.5; white-space: pre-line; }
+    .btn-wise {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; padding: 5px 12px;
+      background: rgba(22, 185, 140, 0.12); color: #16b98c;
+      border: 1px solid rgba(22, 185, 140, 0.35); border-radius: 20px;
+      font-size: .8rem; text-decoration: none; transition: background .2s;
+    }
+    .btn-wise:hover { background: rgba(22, 185, 140, 0.22); }
 
     /* Datos + logos en fila: texto a la izquierda, redes en columna a la derecha */
     .info { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
@@ -204,6 +212,10 @@
         <div class="sobre" id="sobre" hidden>
           <h3>Sobre mí</h3>
           <p id="sobreTexto"></p>
+          <a id="wiseBtn" class="btn-wise" target="_blank" rel="noopener" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.01 7.5l-4.5 9-2.25-4.5-2.25 4.5-4.5-9h2.25l2.25 4.5 2.25-4.5 2.25 4.5 2.25-4.5H17.01z"/></svg>
+            Wise
+          </a>
         </div>
       </div>
     </section>
@@ -337,6 +349,9 @@
       if (m.sobre) {
         document.getElementById("sobreTexto").textContent = m.sobre;
         sobre.hidden = false;
+        const wiseBtn = document.getElementById("wiseBtn");
+        if (m.wise) { wiseBtn.href = m.wise; wiseBtn.hidden = false; }
+        else { wiseBtn.hidden = true; }
       } else {
         sobre.hidden = true;
       }
