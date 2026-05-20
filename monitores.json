@@ -22,5 +22,17 @@
     "whatsapp": "https://wa.me/34600111222",
     "tiktok": "https://www.tiktok.com/@ana.ski",
     "instagram": "https://www.instagram.com/ana.ski"
+  },
+  "alvaro": {
+    "nombre": "Álvaro Mena",
+    "titulo": "Monitor de esquí alpino · Nivel II",
+    "foto": "assets/alvaro.jpg",
+    "telefono": "+34 612 345 678",
+    "email": "alvaro.mena@grandvalira.com",
+    "idiomas": "Español, English, Português",
+    "experiencia": "6 años en Grandvalira",
+    "whatsapp": "https://wa.me/34612345678",
+    "tiktok": "https://www.tiktok.com/@alvaro.skimena",
+    "instagram": "https://www.instagram.com/alvaro.skimena"
   }
 }
