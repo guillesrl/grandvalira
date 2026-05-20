@@ -6,18 +6,23 @@
   <title>Tarjeta de monitor · Grandvalira</title>
   <style>
     :root {
-      --azul: #1e6fb8;
-      --azul-osc: #134a7c;
-      --texto: #1b2a3a;
-      --suave: #5b7185;
+      --azul: #3b8fd6;
+      --azul-osc: #2a6aa5;
+      --texto: #e8eef6;
+      --suave: #9fb1c4;
       --estrella: #ffc107;
+      --surface: #15233a;
+      --surface-2: #1d3047;
+      --borde: #2c425e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; }
     html, body { min-height: 100%; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: var(--texto);
-      background: linear-gradient(160deg, #6b9fd4, #cfe6fb);
+      background: linear-gradient(160deg, #0a1626 0%, #0f2540 55%, #143a5e 100%);
+      background-attachment: fixed;
       min-height: 100vh;
       padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
       display: flex;
@@ -28,9 +33,9 @@
     /* Tarjeta de presentación */
     .card {
       position: relative;
-      background: #fff;
+      background: var(--surface);
       border-radius: 22px;
-      box-shadow: 0 12px 32px rgba(10,30,60,.30);
+      box-shadow: 0 12px 32px rgba(0,0,0,.45);
       text-align: center;
       overflow: hidden;
     }
@@ -84,10 +89,10 @@
 
     /* Formulario */
     .form-card {
-      background: rgba(255,255,255,.96);
+      background: var(--surface);
       border-radius: 22px;
       padding: 22px 20px 24px;
-      box-shadow: 0 12px 32px rgba(10,30,60,.30);
+      box-shadow: 0 12px 32px rgba(0,0,0,.45);
       margin-top: 18px;
     }
     .form-card h2 { font-size: 1.2rem; margin-bottom: 4px; }
@@ -99,7 +104,7 @@
     .estrellas { display: inline-flex; flex-direction: row-reverse; gap: 4px; }
     .estrellas input { position: absolute; opacity: 0; width: 0; height: 0; }
     .estrellas label {
-      font-size: 2rem; line-height: 1; cursor: pointer; color: #d6dde6;
+      font-size: 2rem; line-height: 1; cursor: pointer; color: #3a4d66;
       transition: color .12s ease; padding: 2px;
     }
     .estrellas label::before { content: "★"; }
@@ -112,16 +117,18 @@
     .opciones { display: flex; gap: 12px; }
     .opciones label {
       flex: 1; text-align: center; padding: 12px; border-radius: 12px;
-      border: 2px solid #d6dde6; cursor: pointer; font-weight: 600; color: var(--suave);
+      border: 2px solid var(--borde); cursor: pointer; font-weight: 600; color: var(--suave);
       transition: all .12s ease;
     }
     .opciones input { position: absolute; opacity: 0; }
     .opciones input:checked + label { border-color: var(--azul); background: var(--azul); color: #fff; }
 
     textarea {
-      width: 100%; border: 2px solid #d6dde6; border-radius: 12px;
+      width: 100%; border: 2px solid var(--borde); border-radius: 12px;
       padding: 12px; font: inherit; resize: vertical; min-height: 80px;
+      background: var(--surface-2); color: var(--texto);
     }
+    textarea::placeholder { color: var(--suave); }
     textarea:focus { outline: none; border-color: var(--azul); }
 
     button {
@@ -133,8 +140,8 @@
     button:disabled { opacity: .6; cursor: default; }
 
     .msg { margin-top: 14px; padding: 14px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
-    .msg.ok { display: block; background: #e3f6ea; color: #1f7a45; }
-    .msg.err { display: block; background: #fde8e8; color: #b3261e; }
+    .msg.ok { display: block; background: rgba(31,122,69,.2); color: #6ee7a0; }
+    .msg.err { display: block; background: rgba(179,38,30,.2); color: #ff8a80; }
 
     .gracias { text-align: center; padding: 20px 0; }
     .gracias .check { font-size: 3rem; }
