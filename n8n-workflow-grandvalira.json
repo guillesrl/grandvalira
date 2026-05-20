@@ -1,0 +1,87 @@
+{
+  "name": "Grandvalira - Valoraciones a Neon",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "grandvalira",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "webhook-grandvalira",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300],
+      "webhookId": "grandvalira"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": "valoraciones"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "monitor_id": "={{ $json.body.monitorId }}",
+            "monitor_nombre": "={{ $json.body.monitorNombre }}",
+            "dinamismo": "={{ $json.body.dinamismo }}",
+            "correccion_posturas": "={{ $json.body.correccionPosturas }}",
+            "mejora_nivel": "={{ $json.body.mejoraNivel }}",
+            "trato": "={{ $json.body.trato }}",
+            "volveria": "={{ $json.body.volveria }}",
+            "comentario": "={{ $json.body.comentario }}",
+            "fecha": "={{ $json.body.fecha }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "postgres-insert-neon",
+      "name": "Neon Insert",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [520, 300],
+      "credentials": {
+        "postgres": {
+          "id": "REEMPLAZAR_ID_CREDENCIAL",
+          "name": "Neon grandvalira"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"id\": $json.id } }}",
+        "options": {}
+      },
+      "id": "respond-ok",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [780, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Neon Insert", "type": "main", "index": 0 }]]
+    },
+    "Neon Insert": {
+      "main": [[{ "node": "Responder OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
