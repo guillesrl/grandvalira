@@ -64,6 +64,15 @@
     }
     .nombre { font-size: 1.5rem; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.7); }
     .titulo { color: #eaf2fb; font-weight: 600; margin-top: 2px; text-shadow: 0 1px 3px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.7); }
+    .rating {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 10px; padding: 5px 12px;
+      background: rgba(0,0,0,.45); border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+    .rating-stars { color: #ffc107; font-size: 1rem; letter-spacing: 1px; }
+    .rating-num { color: #fff; font-weight: 700; }
+    .rating-count { color: #d6e0ec; font-size: .82rem; }
     .datos {
       margin-top: 16px;
       text-align: left;
@@ -165,6 +174,11 @@
         <img class="foto" id="foto" alt="Foto del monitor">
         <div class="nombre" id="nombre"></div>
         <div class="titulo" id="titulo"></div>
+        <div class="rating" id="rating" hidden>
+          <span class="rating-stars" id="ratingStars"></span>
+          <span class="rating-num" id="ratingNum"></span>
+          <span class="rating-count" id="ratingCount"></span>
+        </div>
       </div>
       <div class="card-body">
         <div class="info">
@@ -238,6 +252,7 @@
 
   <script>
     const WEBHOOK_URL = "https://n8n.guillers.es/webhook/grandvalira";
+    const STATS_URL = "https://n8n.guillers.es/webhook/grandvalira-stats";
     const CAMPOS_ESTRELLAS = ["dinamismo", "correccionPosturas", "mejoraNivel", "trato"];
 
     const params = new URLSearchParams(location.search);
@@ -267,9 +282,32 @@
         pintarTarjeta(monitor);
         document.getElementById("tarjeta").hidden = false;
         document.getElementById("formCard").hidden = false;
+        cargarValoracion();
       } catch (e) {
         mostrarAviso();
       }
+    }
+
+    // Lee la media general del monitor y la muestra en la tarjeta
+    async function cargarValoracion() {
+      try {
+        const res = await fetch(`${STATS_URL}?id=${encodeURIComponent(monitorId)}`, { cache: "no-store" });
+        if (!res.ok) return;
+        let data = await res.json();
+        if (Array.isArray(data)) data = data[0];
+        if (!data || data.media_general == null) return;
+        pintarRating(Number(data.media_general), Number(data.total_valoraciones) || 0);
+      } catch (e) { /* silencioso: si falla, no se muestra rating */ }
+    }
+
+    function pintarRating(media, total) {
+      const llenas = Math.round(media);
+      document.getElementById("ratingStars").textContent =
+        "★".repeat(llenas) + "☆".repeat(5 - llenas);
+      document.getElementById("ratingNum").textContent = media.toFixed(1);
+      document.getElementById("ratingCount").textContent =
+        `(${total} ${total === 1 ? "valoración" : "valoraciones"})`;
+      document.getElementById("rating").hidden = false;
     }
 
     function pintarTarjeta(m) {
@@ -334,6 +372,11 @@
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error("HTTP " + res.status);
+        try {
+          let r = await res.json();
+          if (Array.isArray(r)) r = r[0];
+          if (r && r.media_general != null) pintarRating(Number(r.media_general), Number(r.total_valoraciones) || 0);
+        } catch (e) { /* ignora */ }
         document.getElementById("formCard").hidden = true;
         document.getElementById("gracias").hidden = false;
         document.getElementById("gracias").scrollIntoView({ behavior: "smooth" });
