@@ -6,7 +6,10 @@
     "telefono": "+34 600 000 000",
     "email": "carlos@grandvalira.com",
     "idiomas": "Español, English, Français",
-    "experiencia": "10 años en Grandvalira"
+    "experiencia": "10 años en Grandvalira",
+    "whatsapp": "https://wa.me/34600000000",
+    "tiktok": "https://www.tiktok.com/@grandvalira",
+    "instagram": "https://www.instagram.com/grandvalira"
   },
   "ana": {
     "nombre": "Ana Martín",
@@ -15,6 +18,9 @@
     "telefono": "+34 600 111 222",
     "email": "ana@grandvalira.com",
     "idiomas": "Español, English, Français",
-    "experiencia": "8 años en Grandvalira"
+    "experiencia": "8 años en Grandvalira",
+    "whatsapp": "https://wa.me/34600111222",
+    "tiktok": "https://www.tiktok.com/@ana.ski",
+    "instagram": "https://www.instagram.com/ana.ski"
   }
 }
