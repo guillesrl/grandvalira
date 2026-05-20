@@ -117,28 +117,24 @@
     .pregunta { margin-bottom: 20px; }
     .pregunta > label.q { display: block; font-weight: 600; margin-bottom: 8px; }
 
-    /* Estrellas: radios en orden inverso con flex-direction reverse */
-    .estrellas { display: inline-flex; flex-direction: row-reverse; gap: 4px; }
-    .estrellas input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .estrellas label {
-      font-size: 2rem; line-height: 1; cursor: pointer; color: #3a4d66;
-      transition: color .12s ease; padding: 2px;
-    }
-    .estrellas label::before { content: "★"; }
-    .estrellas input:checked ~ label,
-    .estrellas label:hover,
-    .estrellas label:hover ~ label { color: #ffc107; }
-    .estrellas input:focus-visible + label { outline: 2px solid var(--azul); border-radius: 4px; }
+    .pregunta .qsub { display: block; color: var(--suave); font-size: .85rem; font-weight: 400; margin: -4px 0 10px; }
 
-    /* Sí / No */
-    .opciones { display: flex; gap: 12px; }
+    /* Lista de opciones (escala) vertical, seleccionable */
+    .opciones { display: flex; flex-direction: column; gap: 8px; }
     .opciones label {
-      flex: 1; text-align: center; padding: 12px; border-radius: 12px;
-      border: 2px solid var(--borde); cursor: pointer; font-weight: 600; color: var(--suave);
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; border-radius: 12px;
+      border: 2px solid var(--borde); cursor: pointer; font-weight: 500; color: var(--texto);
       transition: all .12s ease;
     }
-    .opciones input { position: absolute; opacity: 0; }
-    .opciones input:checked + label { border-color: var(--azul); background: var(--azul); color: #fff; }
+    .opciones label::before {
+      content: ""; width: 18px; height: 18px; flex: 0 0 auto;
+      border-radius: 50%; border: 2px solid var(--suave); transition: all .12s ease;
+    }
+    .opciones input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .opciones input:checked + label { border-color: var(--azul); background: rgba(59,143,214,.18); color: #fff; }
+    .opciones input:checked + label::before { border-color: var(--azul); background: var(--azul); box-shadow: inset 0 0 0 3px var(--surface); }
+    .opciones input:focus-visible + label { outline: 2px solid var(--azul); }
 
     textarea {
       width: 100%; border: 2px solid var(--borde); border-radius: 12px;
@@ -205,37 +201,17 @@
 
     <!-- Formulario de valoración -->
     <section class="form-card" id="formCard" hidden>
-      <h2>Valora tu clase</h2>
-      <p class="sub">Tu opinión nos ayuda a mejorar 🙏</p>
+      <h2>Encuesta de satisfacción</h2>
+      <p class="sub">Clase de esquí alpino. Tu opinión nos ayuda a mejorar la experiencia en pista y la calidad de nuestras clases. Gracias por dedicar unos minutos ⛷️</p>
       <form id="form">
+        <div id="preguntas"></div>
         <div class="pregunta">
-          <label class="q">¿La clase fue dinámica?</label>
-          <div class="estrellas" data-campo="dinamismo"></div>
+          <label class="q" for="loMejor">10. ¿Qué es lo que más te gustó de la clase?</label>
+          <textarea id="loMejor" placeholder="Cuéntanos lo mejor..."></textarea>
         </div>
         <div class="pregunta">
-          <label class="q">¿Te corrigió posturas?</label>
-          <div class="estrellas" data-campo="correccionPosturas"></div>
-        </div>
-        <div class="pregunta">
-          <label class="q">¿Sientes que has mejorado tu nivel?</label>
-          <div class="estrellas" data-campo="mejoraNivel"></div>
-        </div>
-        <div class="pregunta">
-          <label class="q">Trato y amabilidad</label>
-          <div class="estrellas" data-campo="trato"></div>
-        </div>
-        <div class="pregunta">
-          <label class="q">¿Volverías con el mismo profe?</label>
-          <div class="opciones">
-            <input type="radio" name="volveria" id="vol-si" value="si">
-            <label for="vol-si">Sí 👍</label>
-            <input type="radio" name="volveria" id="vol-no" value="no">
-            <label for="vol-no">No 👎</label>
-          </div>
-        </div>
-        <div class="pregunta">
-          <label class="q" for="comentario">Comentario (opcional)</label>
-          <textarea id="comentario" placeholder="Cuéntanos tu experiencia..."></textarea>
+          <label class="q" for="mejorar">¿Qué podríamos mejorar?</label>
+          <textarea id="mejorar" placeholder="Tus sugerencias..."></textarea>
         </div>
         <button type="submit" id="btnEnviar">Enviar valoración</button>
         <div class="msg" id="msg"></div>
@@ -253,24 +229,50 @@
   <script>
     const WEBHOOK_URL = "https://n8n.guillers.es/webhook/grandvalira";
     const STATS_URL = "https://n8n.guillers.es/webhook/grandvalira-stats";
-    const CAMPOS_ESTRELLAS = ["dinamismo", "correccionPosturas", "mejoraNivel", "trato"];
+
+    // Preguntas con escala: la 1ª opción puntúa 5 y la última 1
+    const PREGUNTAS = [
+      { campo: "calidadGeneral", titulo: "1. Calidad general de la clase", sub: "¿Cómo valorarías la experiencia general de la clase?", opciones: ["Excelente", "Muy buena", "Buena", "Mejorable", "Insuficiente"] },
+      { campo: "dinamismo", titulo: "2. Dinamismo y organización", sub: "¿La clase fue dinámica y bien estructurada?", opciones: ["Sí, totalmente", "En gran parte", "A veces", "Poco", "Nada"] },
+      { campo: "correccionTecnica", titulo: "3. Corrección técnica", sub: "¿El instructor corrigió adecuadamente tu técnica y posturas durante la sesión?", opciones: ["Constantemente y de forma útil", "Frecuentemente", "Ocasionalmente", "Muy poco", "Nada"] },
+      { campo: "progresion", titulo: "4. Progresión y aprendizaje", sub: "¿Sientes que has mejorado tu nivel de esquí alpino después de la clase?", opciones: ["Mucho", "Bastante", "Algo", "Poco", "Nada"] },
+      { campo: "trato", titulo: "5. Atención y trato", sub: "¿Cómo valorarías el trato, la comunicación y la amabilidad del instructor/a?", opciones: ["Excelente", "Muy buena", "Buena", "Mejorable", "Insuficiente"] },
+      { campo: "adaptacion", titulo: "6. Adaptación al nivel", sub: "¿La clase se adaptó correctamente a tu nivel y objetivos?", opciones: ["Perfectamente", "Bien adaptada", "Parcialmente", "Poco adaptada", "Nada adaptada"] },
+      { campo: "seguridad", titulo: "7. Seguridad y confianza", sub: "¿Te sentiste seguro/a y acompañado/a durante la actividad?", opciones: ["Siempre", "Casi siempre", "A veces", "Rara vez", "Nunca"] },
+      { campo: "volveriaInstructor", titulo: "8. Valoración del instructor", sub: "¿Volverías a realizar una clase con el mismo instructor/a?", opciones: ["Sí, sin duda", "Probablemente sí", "No estoy seguro/a", "Probablemente no", "No"] },
+      { campo: "recomendacion", titulo: "9. Recomendación", sub: "¿Recomendarías nuestras clases de esquí alpino a otras personas?", opciones: ["Sí, totalmente", "Probablemente sí", "No estoy seguro/a", "Probablemente no", "No"] }
+    ];
+    const CAMPOS_ESCALA = PREGUNTAS.map(p => p.campo);
 
     const params = new URLSearchParams(location.search);
     const monitorId = params.get("id") || "demo";
     let monitor = null;
 
-    // Genera los radios de estrellas (5..1 para que el CSS row-reverse funcione)
-    document.querySelectorAll(".estrellas").forEach(cont => {
-      const campo = cont.dataset.campo;
-      for (let i = 5; i >= 1; i--) {
-        const input = document.createElement("input");
-        input.type = "radio"; input.name = campo; input.value = i; input.id = `${campo}-${i}`;
-        const label = document.createElement("label");
-        label.htmlFor = `${campo}-${i}`;
-        label.setAttribute("aria-label", `${i} estrellas`);
-        cont.appendChild(input); cont.appendChild(label);
-      }
-    });
+    // Renderiza las preguntas de escala (cada opción puntúa de 5 a 1)
+    (function generarPreguntas() {
+      const cont = document.getElementById("preguntas");
+      PREGUNTAS.forEach(p => {
+        const wrap = document.createElement("div");
+        wrap.className = "pregunta";
+        const lab = document.createElement("label");
+        lab.className = "q"; lab.textContent = p.titulo;
+        const sub = document.createElement("span");
+        sub.className = "qsub"; sub.textContent = p.sub;
+        const opc = document.createElement("div");
+        opc.className = "opciones";
+        p.opciones.forEach((texto, idx) => {
+          const valor = 5 - idx; // 1ª opción = 5, última = 1
+          const id = `${p.campo}-${valor}`;
+          const input = document.createElement("input");
+          input.type = "radio"; input.name = p.campo; input.value = valor; input.id = id;
+          const label = document.createElement("label");
+          label.htmlFor = id; label.append(document.createTextNode(texto));
+          opc.appendChild(input); opc.appendChild(label);
+        });
+        wrap.append(lab, sub, opc);
+        cont.appendChild(wrap);
+      });
+    })();
 
     // Carga los datos del monitor
     async function cargarMonitor() {
@@ -346,20 +348,24 @@
       msg.className = "msg";
 
       const valores = {};
-      for (const campo of CAMPOS_ESTRELLAS) {
+      for (let i = 0; i < CAMPOS_ESCALA.length; i++) {
+        const campo = CAMPOS_ESCALA[i];
         const sel = form.querySelector(`input[name="${campo}"]:checked`);
-        if (!sel) { error("Por favor, valora todos los apartados con estrellas."); return; }
+        if (!sel) {
+          error(`Por favor, responde la pregunta ${i + 1}.`);
+          const grupo = form.querySelector(`input[name="${campo}"]`);
+          if (grupo) grupo.closest(".pregunta").scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
         valores[campo] = Number(sel.value);
       }
-      const volveriaSel = form.querySelector('input[name="volveria"]:checked');
-      if (!volveriaSel) { error("Indica si volverías con el mismo profe."); return; }
 
       const payload = {
         monitorId: monitorId,
         monitorNombre: monitor ? monitor.nombre : null,
         ...valores,
-        volveria: volveriaSel.value === "si",
-        comentario: document.getElementById("comentario").value.trim(),
+        loMejor: document.getElementById("loMejor").value.trim(),
+        mejorar: document.getElementById("mejorar").value.trim(),
         fecha: new Date().toISOString()
       };
 
