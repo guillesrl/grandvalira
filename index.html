@@ -24,11 +24,17 @@
       background: linear-gradient(160deg, #0a1626 0%, #0f2540 55%, #143a5e 100%);
       background-attachment: fixed;
       min-height: 100vh;
-      padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+      padding: 20px calc(14px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
       display: flex;
       justify-content: center;
     }
-    .wrap { width: 100%; max-width: 440px; }
+    .wrap { width: 100%; max-width: 480px; }
+
+    @media (max-width: 380px) {
+      body { padding-left: calc(10px + env(safe-area-inset-left)); padding-right: calc(10px + env(safe-area-inset-right)); padding-top: 14px; }
+      .nombre { font-size: 1.35rem; }
+      .estrellas label { font-size: 1.7rem; }
+    }
 
     /* Tarjeta de presentación */
     .card {
