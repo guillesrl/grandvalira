@@ -1,0 +1,20 @@
+{
+  "demo": {
+    "nombre": "Carlos Vidal",
+    "titulo": "Monitor de esquí · Nivel III",
+    "foto": "assets/monitor-demo.svg",
+    "telefono": "+34 600 000 000",
+    "email": "carlos@grandvalira.com",
+    "idiomas": "Español, English, Français",
+    "experiencia": "10 años en Grandvalira"
+  },
+  "ana": {
+    "nombre": "Ana Martín",
+    "titulo": "Monitora de esquí · Nivel III",
+    "foto": "assets/monitor-demo.svg",
+    "telefono": "+34 600 111 222",
+    "email": "ana@grandvalira.com",
+    "idiomas": "Español, English, Français",
+    "experiencia": "8 años en Grandvalira"
+  }
+}

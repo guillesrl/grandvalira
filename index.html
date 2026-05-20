@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tarjeta de monitor · Grandvalira</title>
+  <style>
+    :root {
+      --azul: #1e6fb8;
+      --azul-osc: #134a7c;
+      --texto: #1b2a3a;
+      --suave: #5b7185;
+      --estrella: #ffc107;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--texto);
+      background:
+        linear-gradient(rgba(20,40,70,.45), rgba(20,40,70,.65)),
+        url("assets/fondo-montanas.svg") center/cover fixed no-repeat,
+        #6b9fd4;
+      min-height: 100vh;
+      padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+      display: flex;
+      justify-content: center;
+    }
+    .wrap { width: 100%; max-width: 440px; }
+
+    /* Tarjeta de presentación */
+    .card {
+      background: rgba(255,255,255,.86);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 22px;
+      padding: 22px 20px 24px;
+      box-shadow: 0 12px 32px rgba(10,30,60,.30);
+      text-align: center;
+    }
+    .foto {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      box-shadow: 0 6px 18px rgba(10,30,60,.25);
+      margin: -2px auto 12px;
+      display: block;
+      background: #cdd9e6;
+    }
+    .nombre { font-size: 1.5rem; font-weight: 700; }
+    .titulo { color: var(--azul-osc); font-weight: 600; margin-top: 2px; }
+    .datos {
+      margin-top: 16px;
+      text-align: left;
+      display: grid;
+      gap: 8px;
+      font-size: .95rem;
+    }
+    .datos div { display: flex; align-items: center; gap: 10px; color: var(--suave); }
+    .datos .ico { width: 20px; text-align: center; }
+    .datos a { color: var(--azul); text-decoration: none; }
+
+    /* Formulario */
+    .form-card {
+      background: rgba(255,255,255,.96);
+      border-radius: 22px;
+      padding: 22px 20px 24px;
+      box-shadow: 0 12px 32px rgba(10,30,60,.30);
+      margin-top: 18px;
+    }
+    .form-card h2 { font-size: 1.2rem; margin-bottom: 4px; }
+    .form-card .sub { color: var(--suave); font-size: .9rem; margin-bottom: 18px; }
+    .pregunta { margin-bottom: 20px; }
+    .pregunta > label.q { display: block; font-weight: 600; margin-bottom: 8px; }
+
+    /* Estrellas: radios en orden inverso con flex-direction reverse */
+    .estrellas { display: inline-flex; flex-direction: row-reverse; gap: 4px; }
+    .estrellas input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .estrellas label {
+      font-size: 2rem; line-height: 1; cursor: pointer; color: #d6dde6;
+      transition: color .12s ease; padding: 2px;
+    }
+    .estrellas label::before { content: "★"; }
+    .estrellas input:checked ~ label,
+    .estrellas label:hover,
+    .estrellas label:hover ~ label { color: #ffc107; }
+    .estrellas input:focus-visible + label { outline: 2px solid var(--azul); border-radius: 4px; }
+
+    /* Sí / No */
+    .opciones { display: flex; gap: 12px; }
+    .opciones label {
+      flex: 1; text-align: center; padding: 12px; border-radius: 12px;
+      border: 2px solid #d6dde6; cursor: pointer; font-weight: 600; color: var(--suave);
+      transition: all .12s ease;
+    }
+    .opciones input { position: absolute; opacity: 0; }
+    .opciones input:checked + label { border-color: var(--azul); background: var(--azul); color: #fff; }
+
+    textarea {
+      width: 100%; border: 2px solid #d6dde6; border-radius: 12px;
+      padding: 12px; font: inherit; resize: vertical; min-height: 80px;
+    }
+    textarea:focus { outline: none; border-color: var(--azul); }
+
+    button {
+      width: 100%; padding: 15px; border: none; border-radius: 14px;
+      background: var(--azul); color: #fff; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; margin-top: 6px; transition: background .15s ease;
+    }
+    button:hover:not(:disabled) { background: var(--azul-osc); }
+    button:disabled { opacity: .6; cursor: default; }
+
+    .msg { margin-top: 14px; padding: 14px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
+    .msg.ok { display: block; background: #e3f6ea; color: #1f7a45; }
+    .msg.err { display: block; background: #fde8e8; color: #b3261e; }
+
+    .gracias { text-align: center; padding: 20px 0; }
+    .gracias .check { font-size: 3rem; }
+    .gracias h2 { margin: 8px 0 4px; }
+    .gracias p { color: var(--suave); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Tarjeta de presentación -->
+    <section class="card" id="tarjeta" hidden>
+      <img class="foto" id="foto" alt="Foto del monitor">
+      <div class="nombre" id="nombre"></div>
+      <div class="titulo" id="titulo"></div>
+      <div class="datos">
+        <div><span class="ico">📞</span><a id="telefono"></a></div>
+        <div><span class="ico">✉️</span><a id="email"></a></div>
+        <div><span class="ico">🗣️</span><span id="idiomas"></span></div>
+        <div><span class="ico">⛷️</span><span id="experiencia"></span></div>
+      </div>
+    </section>
+
+    <!-- Formulario de valoración -->
+    <section class="form-card" id="formCard" hidden>
+      <h2>Valora tu clase</h2>
+      <p class="sub">Tu opinión nos ayuda a mejorar 🙏</p>
+      <form id="form">
+        <div class="pregunta">
+          <label class="q">¿La clase fue dinámica?</label>
+          <div class="estrellas" data-campo="dinamismo"></div>
+        </div>
+        <div class="pregunta">
+          <label class="q">¿Te corrigió posturas?</label>
+          <div class="estrellas" data-campo="correccionPosturas"></div>
+        </div>
+        <div class="pregunta">
+          <label class="q">¿Sientes que has mejorado tu nivel?</label>
+          <div class="estrellas" data-campo="mejoraNivel"></div>
+        </div>
+        <div class="pregunta">
+          <label class="q">Trato y amabilidad</label>
+          <div class="estrellas" data-campo="trato"></div>
+        </div>
+        <div class="pregunta">
+          <label class="q">¿Volverías con el mismo profe?</label>
+          <div class="opciones">
+            <input type="radio" name="volveria" id="vol-si" value="si">
+            <label for="vol-si">Sí 👍</label>
+            <input type="radio" name="volveria" id="vol-no" value="no">
+            <label for="vol-no">No 👎</label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <label class="q" for="comentario">Comentario (opcional)</label>
+          <textarea id="comentario" placeholder="Cuéntanos tu experiencia..."></textarea>
+        </div>
+        <button type="submit" id="btnEnviar">Enviar valoración</button>
+        <div class="msg" id="msg"></div>
+      </form>
+    </section>
+
+    <!-- Pantalla de agradecimiento -->
+    <section class="form-card gracias" id="gracias" hidden>
+      <div class="check">✅</div>
+      <h2>¡Gracias por tu valoración!</h2>
+      <p>Tu opinión se ha enviado correctamente.</p>
+    </section>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = "https://n8n.guillers.es/webhook/grandvalira";
+    const CAMPOS_ESTRELLAS = ["dinamismo", "correccionPosturas", "mejoraNivel", "trato"];
+
+    const params = new URLSearchParams(location.search);
+    const monitorId = params.get("id") || "demo";
+    let monitor = null;
+
+    // Genera los radios de estrellas (5..1 para que el CSS row-reverse funcione)
+    document.querySelectorAll(".estrellas").forEach(cont => {
+      const campo = cont.dataset.campo;
+      for (let i = 5; i >= 1; i--) {
+        const input = document.createElement("input");
+        input.type = "radio"; input.name = campo; input.value = i; input.id = `${campo}-${i}`;
+        const label = document.createElement("label");
+        label.htmlFor = `${campo}-${i}`;
+        label.setAttribute("aria-label", `${i} estrellas`);
+        cont.appendChild(input); cont.appendChild(label);
+      }
+    });
+
+    // Carga los datos del monitor
+    async function cargarMonitor() {
+      try {
+        const res = await fetch("monitores.json", { cache: "no-store" });
+        const data = await res.json();
+        monitor = data[monitorId];
+        if (!monitor) { mostrarAviso(); return; }
+        pintarTarjeta(monitor);
+        document.getElementById("tarjeta").hidden = false;
+        document.getElementById("formCard").hidden = false;
+      } catch (e) {
+        mostrarAviso();
+      }
+    }
+
+    function pintarTarjeta(m) {
+      const foto = document.getElementById("foto");
+      foto.src = m.foto; foto.alt = "Foto de " + m.nombre;
+      document.getElementById("nombre").textContent = m.nombre;
+      document.getElementById("titulo").textContent = m.titulo;
+      const tel = document.getElementById("telefono");
+      tel.textContent = m.telefono; tel.href = "tel:" + m.telefono.replace(/\s/g, "");
+      const mail = document.getElementById("email");
+      mail.textContent = m.email; mail.href = "mailto:" + m.email;
+      document.getElementById("idiomas").textContent = m.idiomas;
+      document.getElementById("experiencia").textContent = m.experiencia;
+    }
+
+    function mostrarAviso() {
+      const t = document.getElementById("tarjeta");
+      t.hidden = false;
+      t.innerHTML = '<div class="nombre">Monitor no encontrado</div>' +
+        '<p class="titulo">No existe un monitor con id "' + monitorId + '".</p>';
+    }
+
+    // Envío del formulario
+    const form = document.getElementById("form");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById("msg");
+      msg.className = "msg";
+
+      const valores = {};
+      for (const campo of CAMPOS_ESTRELLAS) {
+        const sel = form.querySelector(`input[name="${campo}"]:checked`);
+        if (!sel) { error("Por favor, valora todos los apartados con estrellas."); return; }
+        valores[campo] = Number(sel.value);
+      }
+      const volveriaSel = form.querySelector('input[name="volveria"]:checked');
+      if (!volveriaSel) { error("Indica si volverías con el mismo profe."); return; }
+
+      const payload = {
+        monitorId: monitorId,
+        monitorNombre: monitor ? monitor.nombre : null,
+        ...valores,
+        volveria: volveriaSel.value === "si",
+        comentario: document.getElementById("comentario").value.trim(),
+        fecha: new Date().toISOString()
+      };
+
+      const btn = document.getElementById("btnEnviar");
+      btn.disabled = true; btn.textContent = "Enviando...";
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        document.getElementById("formCard").hidden = true;
+        document.getElementById("gracias").hidden = false;
+        document.getElementById("gracias").scrollIntoView({ behavior: "smooth" });
+      } catch (err) {
+        error("No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.");
+        btn.disabled = false; btn.textContent = "Enviar valoración";
+      }
+
+      function error(texto) { msg.textContent = texto; msg.className = "msg err"; }
+    });
+
+    cargarMonitor();
+  </script>
+</body>
+</html>
