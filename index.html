@@ -34,25 +34,25 @@
       text-align: center;
       overflow: hidden;
     }
-    /* Mitad superior: imagen real de montañas */
+    /* Imagen real de montañas: cubre foto, nombre y título */
     .banner {
-      height: 170px;
       background: #cdd9e6 url("assets/montanas.jpg") center/cover no-repeat;
+      padding: 90px 20px 18px;
+      text-align: center;
     }
-    .card-body { padding: 0 20px 22px; }
+    .card-body { padding: 18px 20px 22px; }
     .foto {
       width: 120px; height: 120px;
       border-radius: 50%;
       object-fit: cover;
       border: 4px solid #fff;
-      box-shadow: 0 6px 18px rgba(10,30,60,.25);
-      margin: -60px auto 12px;
+      box-shadow: 0 6px 18px rgba(10,30,60,.35);
+      margin: 0 auto 12px;
       display: block;
       background: #cdd9e6;
-      position: relative;
     }
-    .nombre { font-size: 1.5rem; font-weight: 700; }
-    .titulo { color: var(--azul-osc); font-weight: 600; margin-top: 2px; }
+    .nombre { font-size: 1.5rem; font-weight: 700; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
+    .titulo { color: #eaf2fb; font-weight: 600; margin-top: 2px; text-shadow: 0 1px 4px rgba(0,0,0,.5); }
     .datos {
       margin-top: 16px;
       text-align: left;
@@ -146,11 +146,12 @@
   <div class="wrap">
     <!-- Tarjeta de presentación -->
     <section class="card" id="tarjeta" hidden>
-      <div class="banner"></div>
-      <div class="card-body">
+      <div class="banner">
         <img class="foto" id="foto" alt="Foto del monitor">
         <div class="nombre" id="nombre"></div>
         <div class="titulo" id="titulo"></div>
+      </div>
+      <div class="card-body">
         <div class="datos">
           <div><span class="ico">📞</span><a id="telefono"></a></div>
           <div><span class="ico">✉️</span><a id="email"></a></div>
