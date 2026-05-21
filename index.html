@@ -270,15 +270,12 @@
 
     // Preguntas con escala: la 1ª opción puntúa 5 y la última 1
     const PREGUNTAS = [
-      { campo: "calidadGeneral", titulo: "1. Calidad general de la clase", sub: "¿Cómo valorarías la experiencia general de la clase?", opciones: ["Excelente", "Muy buena", "Buena", "Mejorable", "Insuficiente"] },
-      { campo: "dinamismo", titulo: "2. Dinamismo y organización", sub: "¿La clase fue dinámica y bien estructurada?", opciones: ["Sí, totalmente", "En gran parte", "A veces", "Poco", "Nada"] },
-      { campo: "correccionTecnica", titulo: "3. Corrección técnica", sub: "¿El instructor corrigió adecuadamente tu técnica y posturas durante la sesión?", opciones: ["Constantemente y de forma útil", "Frecuentemente", "Ocasionalmente", "Muy poco", "Nada"] },
-      { campo: "progresion", titulo: "4. Progresión y aprendizaje", sub: "¿Sientes que has mejorado tu nivel de esquí alpino después de la clase?", opciones: ["Mucho", "Bastante", "Algo", "Poco", "Nada"] },
-      { campo: "trato", titulo: "5. Atención y trato", sub: "¿Cómo valorarías el trato, la comunicación y la amabilidad del instructor/a?", opciones: ["Excelente", "Muy buena", "Buena", "Mejorable", "Insuficiente"] },
-      { campo: "adaptacion", titulo: "6. Adaptación al nivel", sub: "¿La clase se adaptó correctamente a tu nivel y objetivos?", opciones: ["Perfectamente", "Bien adaptada", "Parcialmente", "Poco adaptada", "Nada adaptada"] },
-      { campo: "seguridad", titulo: "7. Seguridad y confianza", sub: "¿Te sentiste seguro/a y acompañado/a durante la actividad?", opciones: ["Siempre", "Casi siempre", "A veces", "Rara vez", "Nunca"] },
-      { campo: "volveriaInstructor", titulo: "8. Valoración del instructor", sub: "¿Volverías a realizar una clase con el mismo instructor/a?", opciones: ["Sí, sin duda", "Probablemente sí", "No estoy seguro/a", "Probablemente no", "No"] },
-      { campo: "recomendacion", titulo: "9. Recomendación", sub: "¿Recomendarías nuestras clases de esquí alpino a otras personas?", opciones: ["Sí, totalmente", "Probablemente sí", "No estoy seguro/a", "Probablemente no", "No"] }
+      { campo: "dinamismo", titulo: "1. Dinamismo y organización", sub: "¿La clase fue dinámica y bien estructurada?", opciones: ["Sí, totalmente", "En gran parte", "A veces", "Poco", "Nada"] },
+      { campo: "correccionTecnica", titulo: "2. Corrección técnica", sub: "¿El instructor corrigió adecuadamente tu técnica y posturas durante la sesión?", opciones: ["Constantemente y de forma útil", "Frecuentemente", "Ocasionalmente", "Muy poco", "Nada"] },
+      { campo: "progresion", titulo: "3. Progresión y aprendizaje", sub: "¿Sientes que has mejorado tu nivel de esquí alpino después de la clase?", opciones: ["Mucho", "Bastante", "Algo", "Poco", "Nada"] },
+      { campo: "trato", titulo: "4. Atención y trato", sub: "¿Cómo valorarías el trato, la comunicación y la amabilidad del instructor/a?", opciones: ["Excelente", "Muy buena", "Buena", "Mejorable", "Insuficiente"] },
+      { campo: "adaptacion", titulo: "5. Adaptación al nivel", sub: "¿La clase se adaptó correctamente a tu nivel y objetivos?", opciones: ["Perfectamente", "Bien adaptada", "Parcialmente", "Poco adaptada", "Nada adaptada"] },
+      { campo: "seguridad", titulo: "6. Seguridad y confianza", sub: "¿Te sentiste seguro/a y acompañado/a durante la actividad?", opciones: ["Siempre", "Casi siempre", "A veces", "Rara vez", "Nunca"] }
     ];
     const CAMPOS_ESCALA = PREGUNTAS.map(p => p.campo);
 
