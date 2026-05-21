@@ -9,7 +9,7 @@ Demo: https://guillesrl.github.io/grandvalira/?id=alvaro
 - Tarjeta de presentación con foto, datos de contacto y redes sociales
 - Sección "Sobre mí" con botones de propina (Wise + Bizum)
 - Badge con la puntuación media del monitor en tiempo real
-- Encuesta de satisfacción de 9 preguntas (escala 1–5 estrellas) + 2 campos de texto
+- Encuesta de satisfacción de 6 preguntas (escala 1–5 estrellas) + 2 campos de texto
 - Envío al webhook de n8n → almacenamiento en Neon PostgreSQL
 - Diseño dark mode, glassmorphism, safe-area para móviles con notch
 - Sin dependencias ni build — un único `index.html`
@@ -69,7 +69,7 @@ Para añadir un monitor nuevo, añadir una entrada en `monitores.json`:
 ### Tablas
 
 **valoraciones** — una fila por encuesta enviada:
-`id, monitor_id, monitor_nombre, calidad_general, dinamismo, correccion_tecnica, progresion, trato, adaptacion, seguridad, volveria_instructor, recomendacion, lo_mejor, mejorar, media_puntaje, created_at`
+`id, monitor_id, monitor_nombre, dinamismo, correccion_tecnica, progresion, trato, adaptacion, seguridad, lo_mejor, mejorar, media_puntaje, created_at`
 
 **monitores** — una fila por monitor con su media acumulada:
 `monitor_id, monitor_nombre, total_valoraciones, media_general, updated_at`
